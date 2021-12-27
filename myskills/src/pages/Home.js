@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -14,16 +14,8 @@ import {SkillCard} from '../components/SkillCard'
 
 export function Home() {
   const [newSkill, setNewSkill] = useState('')
-  const [mySkills, setMySkills] = useState([
-    'Node',
-    'React',
-    'React Native',
-    'JavaScript',
-    'CSS',
-    'HTML',
-    'TypeScript',
-    'Styled Components',
-  ])
+  const [mySkills, setMySkills] = useState([])
+  const [greeting, setGreeting] = useState('')
 
   function handleNewAddNewSkill() {
     if (newSkill === '') {
@@ -32,10 +24,23 @@ export function Home() {
     setMySkills((oldState) => [...oldState, newSkill])
   }
 
+  useEffect(() => {
+    const currentHour = new Date().getHours()
+
+    if (currentHour < 12) {
+      setGreeting('Good morning')
+    } else if (currentHour >= 12 && currentHour < 18) {
+      setGreeting('Good afternoon')
+    } else {
+      setGreeting('Good evening')
+    }
+  }, [])
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <Text style={styles.title}>Welcome, Paulo Barros</Text>
+        <Text style={styles.greetings}>{greeting}</Text>
 
         <TextInput
           style={styles.input}
@@ -84,5 +89,8 @@ const styles = StyleSheet.create({
   },
   titleSkills: {
     marginVertical: 50,
+  },
+  greetings: {
+    color: '#fff',
   },
 })
