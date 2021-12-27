@@ -39,8 +39,8 @@ export function Home() {
 
         <Text style={[styles.title, styles.titleSkills]}>My Skills</Text>
 
-        {mySkills.map((skill, index) => (
-          <SkillCard key={skill + index} skill={skill} />
+        {mySkills.map((skill) => (
+          <SkillCard skill={skill} key={skill} />
         ))}
       </View>
     </SafeAreaView>
