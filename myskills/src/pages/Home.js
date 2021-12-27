@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TextInput,
   Platform,
+  FlatList,
 } from 'react-native'
 
 import {Button} from '../components/Button'
@@ -13,14 +14,22 @@ import {SkillCard} from '../components/SkillCard'
 
 export function Home() {
   const [newSkill, setNewSkill] = useState('')
-  const [mySkills, setMySkills] = useState([])
+  const [mySkills, setMySkills] = useState([
+    'Node',
+    'React',
+    'React Native',
+    'JavaScript',
+    'CSS',
+    'HTML',
+    'TypeScript',
+    'Styled Components',
+  ])
 
   function handleNewAddNewSkill() {
     if (newSkill === '') {
       return
     }
     setMySkills((oldState) => [...oldState, newSkill])
-    setNewSkill('')
   }
 
   return (
@@ -39,9 +48,12 @@ export function Home() {
 
         <Text style={[styles.title, styles.titleSkills]}>My Skills</Text>
 
-        {mySkills.map((skill) => (
-          <SkillCard skill={skill} key={skill} />
-        ))}
+        <FlatList
+          data={mySkills}
+          keyExtractor={(item) => item}
+          renderItem={({item}) => <SkillCard skill={item} />}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     </SafeAreaView>
   )
@@ -55,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#121015',
     paddingHorizontal: 30,
-    paddingVertical: 70,
+    paddingVertical: 50,
   },
   title: {
     color: '#fff',
