@@ -38,7 +38,7 @@ export const Footer = styled.View`
   margin-top: 19px;
 `
 
-export const Category = styled.View`
+export const CategoryProps = styled.View`
   flex-direction: row;
   align-items: center;
 `

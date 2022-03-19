@@ -6,27 +6,27 @@ import {
   Title,
   Amount,
   Footer,
-  Category,
+  CategoryProps,
   Icon,
   CategoryName,
   Date,
 } from './styles'
 
-interface Category {
+interface CategoryProps {
   name: string
   icon: React.ComponentProps<typeof Feather>['name']
 }
 
-export interface Transaction {
+export interface TransactionCardProps {
   type: 'positive' | 'negative'
   title: string
   amount: string
-  category: Category
+  category: CategoryProps
   date: string
 }
 
 interface Props {
-  data: Transaction
+  data: TransactionCardProps
 }
 
 export function TransactionCard({data}: Props) {
@@ -38,10 +38,10 @@ export function TransactionCard({data}: Props) {
         {data.amount}
       </Amount>
       <Footer>
-        <Category>
+        <CategoryProps>
           <Icon name={data.category.icon} />
           <CategoryName>{data.category.name}</CategoryName>
-        </Category>
+        </CategoryProps>
         <Date>{data.date}</Date>
       </Footer>
     </Container>
