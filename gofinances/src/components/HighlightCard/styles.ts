@@ -13,7 +13,7 @@ export const Container = styled.View`
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  margin-right: 16px;
 `
 
 export const Title = styled.Text`
@@ -24,15 +24,16 @@ export const Title = styled.Text`
 
 export const Icon = styled(Feather)`
   color: ${({theme}) => theme.colors.success};
-  font-size: ${RFValue(33)}px;
+  font-size: ${RFValue(40)}px;
 `
 
 export const Footer = styled.View``
 
 export const Amount = styled.Text`
-  font-family: ${({theme}) => theme.fonts.regular};
+  font-family: ${({theme}) => theme.fonts.medium};
   font-size: ${RFValue(32)}px;
-  color: ${({theme}) => theme.colors.title};
+  color: ${({theme}) => theme.colors.textDark};
+  margin-top: 38px;
 `
 
 export const LastTransaction = styled.Text`
