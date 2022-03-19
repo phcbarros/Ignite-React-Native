@@ -1,4 +1,5 @@
 import React from 'react'
+import {Feather} from '@expo/vector-icons'
 
 import {
   Container,
@@ -11,17 +12,33 @@ import {
   Date,
 } from './styles'
 
-export function TransactionCard() {
+interface Category {
+  name: string
+  icon: React.ComponentProps<typeof Feather>['name']
+}
+
+export interface Transaction {
+  title: string
+  amount: string
+  category: Category
+  date: string
+}
+
+interface Props {
+  data: Transaction
+}
+
+export function TransactionCard({data}: Props) {
   return (
     <Container>
-      <Title>Desenvolvimento de site</Title>
-      <Amount>R$ 12.000,00</Amount>
+      <Title>{data.title}</Title>
+      <Amount>{data.amount}</Amount>
       <Footer>
         <Category>
-          <Icon name="dollar-sign" />
-          <CategoryName>Vendas</CategoryName>
+          <Icon name={data.category.icon} />
+          <CategoryName>{data.category.name}</CategoryName>
         </Category>
-        <Date>01/04/2020</Date>
+        <Date>{data.date}</Date>
       </Footer>
     </Container>
   )
