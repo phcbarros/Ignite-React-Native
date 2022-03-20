@@ -23,7 +23,7 @@ interface Category {
 
 interface Props {
   category: Category
-  setCategory: (name: string) => void
+  setCategory: (name: Category) => void
   closeSelectCategory: () => void
 }
 
@@ -32,6 +32,10 @@ export function CategorySelect({
   setCategory,
   closeSelectCategory,
 }: Props) {
+  function handleCategorySelect(category: Category): void {
+    setCategory(category)
+  }
+
   return (
     <Container>
       <Header>
@@ -44,7 +48,9 @@ export function CategorySelect({
         style={{flex: 1, width: '100%'}}
         ItemSeparatorComponent={() => <Separator />}
         renderItem={({item}) => (
-          <Category>
+          <Category
+            onPress={() => handleCategorySelect(item)}
+            isActive={item.key === category.key}>
             <Icon name={item.icon} />
             <CategoryName>{item.name}</CategoryName>
           </Category>
@@ -52,7 +58,7 @@ export function CategorySelect({
       />
 
       <Footer>
-        <Button title="Selecionar" />
+        <Button title="Selecionar" onPress={closeSelectCategory} />
       </Footer>
     </Container>
   )
