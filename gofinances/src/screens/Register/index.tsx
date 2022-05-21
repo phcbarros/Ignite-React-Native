@@ -3,7 +3,6 @@ import {Keyboard, Modal, TouchableWithoutFeedback, Alert} from 'react-native'
 import * as Yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useForm} from 'react-hook-form'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import {Button} from '../../components/Form/Button'
 import {CategorySelectButton} from '../../components/Form/CategorySelectButton'
@@ -11,6 +10,7 @@ import {InputForm} from '../../components/Form/InputForm'
 import {TransactionTypeButton} from '../../components/Form/TransactionTypeButton'
 
 import {TransactionsType as EnumTransactionsType} from '../../types/type'
+import {Storage} from '../../infrastructure/storage'
 import {CategorySelect} from '../CategorySelect'
 
 import {
@@ -27,6 +27,13 @@ interface FormData {
   amount: string
 }
 
+type TransactionFormProps = {
+  name: string | undefined
+  amount: string | undefined
+  transactionType: string
+  category: string
+}
+
 const schema = Yup.object().shape({
   name: Yup.string().required('Nome é obrigatório'),
   amount: Yup.number()
@@ -34,8 +41,6 @@ const schema = Yup.object().shape({
     .positive('O valor não pode ser negativo')
     .required('Preço é obrigatório'),
 })
-
-const DATA_KEY = '@gofinances:transactions'
 
 export function Register() {
   const [transactionType, setTransactionType] = useState('')
@@ -50,6 +55,7 @@ export function Register() {
     control,
     handleSubmit,
     formState: {errors},
+    resetField,
   } = useForm({
     resolver: yupResolver(schema),
   })
@@ -75,7 +81,7 @@ export function Register() {
       return Alert.alert('Atenção', 'Selecione uma categoria')
     }
 
-    const data = {
+    const newTransaction: TransactionFormProps = {
       name: form.name,
       amount: form.amount,
       transactionType,
@@ -83,7 +89,12 @@ export function Register() {
     }
 
     try {
-      await AsyncStorage.setItem(DATA_KEY, JSON.stringify(data))
+      const data = await Storage.get<TransactionFormProps[]>()
+      const dataFormatted = [...data, newTransaction]
+      await Storage.save<TransactionFormProps[]>(dataFormatted)
+
+      resetField('name')
+      resetField('amount')
     } catch (error) {
       console.log(error)
       Alert.alert('Atenção', 'Erro ao cadastrar transação')
@@ -92,7 +103,7 @@ export function Register() {
 
   useEffect(() => {
     async function loadData() {
-      const data = await AsyncStorage.getItem(DATA_KEY)
+      const data = await Storage.get<TransactionFormProps[]>()
       console.log(data)
     }
 
