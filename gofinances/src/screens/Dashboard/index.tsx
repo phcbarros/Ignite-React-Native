@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {useFocusEffect, useIsFocused} from '@react-navigation/native'
+import {ActivityIndicator} from 'react-native'
+import {useTheme} from 'styled-components'
 import 'intl'
 import 'intl/locale-data/jsonp/pt-BR'
 
@@ -10,6 +12,8 @@ import {
 } from '../../components/TransactionCard'
 import {Storage} from '../../infrastructure/storage'
 import {Transaction, TransactionsType} from '../../types/type'
+
+import {LoadingContainer} from './styles'
 
 import {
   Container,
@@ -34,6 +38,7 @@ export interface DataListProps extends TransactionCardProps {
 
 type HighlightProps = {
   amount: string
+  lastTransaction: string
 }
 
 type HighLighData = {
@@ -42,20 +47,17 @@ type HighLighData = {
   total: HighlightProps
 }
 
-const initialHighlightData: HighLighData = {
-  entries: {amount: formatCurrency(0)},
-  expesives: {amount: formatCurrency(0)},
-  total: {amount: formatCurrency(0)},
-}
-
 export function Dashboard() {
+  const theme = useTheme()
   const isFocused = useIsFocused()
 
+  const [isLoading, setIsLoading] = useState(true)
   const [transactions, setTransactions] = useState<DataListProps[]>(
     [] as DataListProps[],
   )
-  const [highLighData, setHighLightData] =
-    useState<HighLighData>(initialHighlightData)
+  const [highLighData, setHighLightData] = useState<HighLighData>(
+    {} as HighLighData,
+  )
 
   async function loadTransactions() {
     let entriesTotal = 0
@@ -92,17 +94,37 @@ export function Dashboard() {
       },
     )
 
+    const lastTransactionEntries = getLastTransactionDate(
+      transactions,
+      TransactionsType.positive,
+    )
+    const lastTransactionExpensives = getLastTransactionDate(
+      transactions,
+      TransactionsType.negative,
+    )
+    const totalInterval = `01 a ${lastTransactionExpensives}`
+
     setHighLightData({
-      entries: {amount: formatCurrency(entriesTotal)},
-      expesives: {amount: formatCurrency(expensiveTotal)},
-      total: {amount: formatCurrency(entriesTotal - expensiveTotal)},
+      entries: {
+        amount: formatCurrency(entriesTotal),
+        lastTransaction: lastTransactionEntries,
+      },
+      expesives: {
+        amount: formatCurrency(expensiveTotal),
+        lastTransaction: lastTransactionExpensives,
+      },
+      total: {
+        amount: formatCurrency(entriesTotal - expensiveTotal),
+        lastTransaction: totalInterval,
+      },
     })
 
     setTransactions(formattedTransactions)
+    setIsLoading(false)
   }
 
   // useFocusEffect(
-  //   useCallback(() => {
+  //   useCallback(() => {r
   //     loadTransactions()
   //   }, []),
   // )
@@ -115,61 +137,90 @@ export function Dashboard() {
 
   return (
     <Container>
-      <Header>
-        <UserWrapper>
-          <UserInfo>
-            <Photo
-              source={{
-                uri: 'https://avatars.githubusercontent.com/u/12138058?v=4',
-              }}
+      {isLoading ? (
+        <LoadingContainer>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </LoadingContainer>
+      ) : (
+        <>
+          <Header>
+            <UserWrapper>
+              <UserInfo>
+                <Photo
+                  source={{
+                    uri: 'https://avatars.githubusercontent.com/u/12138058?v=4',
+                  }}
+                />
+                <User>
+                  <UserGreetting>Olá,</UserGreetting>
+                  <UserName>Paulo Barros</UserName>
+                </User>
+              </UserInfo>
+              <LogoutButton onPress={() => {}}>
+                <Icon name="power" />
+              </LogoutButton>
+            </UserWrapper>
+          </Header>
+
+          <HighlightCards>
+            <HighlightCard
+              title="Entradas"
+              amount={highLighData.entries.amount}
+              lastTransaction={`Última entrada dia ${highLighData.entries.lastTransaction}`}
+              type="up"
             />
-            <User>
-              <UserGreetting>Olá,</UserGreetting>
-              <UserName>Paulo Barros</UserName>
-            </User>
-          </UserInfo>
-          <LogoutButton onPress={() => {}}>
-            <Icon name="power" />
-          </LogoutButton>
-        </UserWrapper>
-      </Header>
+            <HighlightCard
+              title="Saídas"
+              amount={highLighData.expesives.amount}
+              lastTransaction={`Última saída dia ${highLighData.expesives.lastTransaction}`}
+              type="down"
+            />
+            <HighlightCard
+              title="Total"
+              amount={highLighData.total.amount}
+              lastTransaction={highLighData.total.lastTransaction}
+              type="total"
+            />
+          </HighlightCards>
 
-      <HighlightCards>
-        <HighlightCard
-          title="Entradas"
-          amount={highLighData.entries.amount}
-          lastTransaction="Última entrada dia 13 de abril"
-          type="up"
-        />
-        <HighlightCard
-          title="Saídas"
-          amount={highLighData.expesives.amount}
-          lastTransaction="Última saída dia 03 de abril"
-          type="down"
-        />
-        <HighlightCard
-          title="Total"
-          amount={highLighData.total.amount}
-          lastTransaction="01 à 16 de abril"
-          type="total"
-        />
-      </HighlightCards>
-
-      <Transactions>
-        <Title>Listagem</Title>
-        <TransactionList
-          data={transactions}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({item}) => <TransactionCard data={item} />}
-        />
-      </Transactions>
+          <Transactions>
+            <Title>Listagem</Title>
+            <TransactionList
+              data={transactions}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({item}) => <TransactionCard data={item} />}
+            />
+          </Transactions>
+        </>
+      )}
     </Container>
   )
 }
 
 function formatCurrency(value: number) {
-  return Intl.NumberFormat('pt-BR', {
+  return value.toLocaleString('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-  }).format(value)
+  })
+}
+
+function getLastTransactionDate(
+  transactions: Transaction[],
+  type: TransactionsType,
+) {
+  const lastTransaction = new Date(
+    Math.max.apply(
+      Math,
+      transactions
+        .filter((transaction) => transaction.type === type)
+        .map((transaction) => new Date(transaction.date).getTime()),
+    ),
+  )
+
+  return `${lastTransaction.getDate()} de ${lastTransaction.toLocaleString(
+    'pt-BR',
+    {
+      month: 'long',
+    },
+  )}`
 }
