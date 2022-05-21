@@ -11,36 +11,37 @@ import {
   CategoryName,
   Date,
 } from './styles'
+import {categories} from '../../utils/categories'
 
-interface CategoryProps {
-  name: string
-  icon: React.ComponentProps<typeof Feather>['name']
-}
+// export interface CategoryProps {
+//   name: string
+//   icon: React.ComponentProps<typeof Feather>['name']
+// }
 
 export interface TransactionCardProps {
   type: 'positive' | 'negative'
-  title: string
+  name: string
   amount: string
-  category: CategoryProps
+  category: string
   date: string
 }
-
 interface Props {
   data: TransactionCardProps
 }
 
 export function TransactionCard({data}: Props) {
+  const [category] = categories.filter((item) => item.key === data.category)
   return (
     <Container>
-      <Title>{data.title}</Title>
+      <Title>{data.name}</Title>
       <Amount type={data.type}>
         {data.type === 'negative' && '- '}
         {data.amount}
       </Amount>
       <Footer>
         <CategoryProps>
-          <Icon name={data.category.icon} />
-          <CategoryName>{data.category.name}</CategoryName>
+          <Icon name={category.icon} />
+          <CategoryName>{category.name}</CategoryName>
         </CategoryProps>
         <Date>{data.date}</Date>
       </Footer>

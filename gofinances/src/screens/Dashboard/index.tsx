@@ -1,10 +1,14 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import 'intl'
+import 'intl/locale-data/jsonp/pt-BR'
 
 import {HighlightCard} from '../../components/HighlightCard'
 import {
   TransactionCard,
   TransactionCardProps,
 } from '../../components/TransactionCard'
+import {Storage} from '../../infrastructure/storage'
+import {Transaction, TransactionsType} from '../../types/type'
 
 import {
   Container,
@@ -22,38 +26,53 @@ import {
   Title,
   TransactionList,
 } from './styles'
+import {categories} from '../../utils/categories'
 
 export interface DataListProps extends TransactionCardProps {
   id: string
 }
 
 export function Dashboard() {
-  const data: DataListProps[] = [
-    {
-      id: '1',
-      type: 'positive',
-      title: 'Desenvolvimento de site',
-      amount: 'R$ 12.000,00',
-      category: {name: 'Vendas', icon: 'dollar-sign'},
-      date: '13/04/2020',
-    },
-    {
-      id: '2',
-      type: 'negative',
-      title: 'Hambugueria',
-      amount: 'R$ 100,00',
-      category: {name: 'Alimentação', icon: 'coffee'},
-      date: '13/04/2020',
-    },
-    {
-      id: '3',
-      type: 'negative',
-      title: 'Alugem do apartamento',
-      amount: 'R$ 220,00',
-      category: {name: 'Casa', icon: 'home'},
-      date: '13/04/2020',
-    },
-  ]
+  const [data, setData] = useState<DataListProps[]>([] as DataListProps[])
+
+  useEffect(() => {
+    async function loadTransactions() {
+      const transactions = await Storage.get<Transaction[]>()
+
+      console.log(transactions)
+
+      const formattedTransactions: DataListProps[] = transactions.map(
+        (transaction) => {
+          const amount = Number(transaction.amount).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })
+
+          const date = Intl.DateTimeFormat('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+          }).format(new Date(transaction.date))
+
+          return {
+            id: transaction.id,
+            name: transaction.name,
+            amount,
+            date,
+            category: transaction.category,
+            type:
+              transaction.transactionType === TransactionsType.up
+                ? 'positive'
+                : 'negative',
+          } as unknown as DataListProps
+        },
+      )
+
+      setData(formattedTransactions)
+    }
+
+    loadTransactions()
+  }, [])
   return (
     <Container>
       <Header>

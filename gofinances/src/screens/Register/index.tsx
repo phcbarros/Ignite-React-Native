@@ -11,7 +11,10 @@ import {CategorySelectButton} from '../../components/Form/CategorySelectButton'
 import {InputForm} from '../../components/Form/InputForm'
 import {TransactionTypeButton} from '../../components/Form/TransactionTypeButton'
 
-import {TransactionsType as EnumTransactionsType} from '../../types/type'
+import {
+  TransactionsType as EnumTransactionsType,
+  Transaction,
+} from '../../types/type'
 import {Storage} from '../../infrastructure/storage'
 import {CategorySelect} from '../CategorySelect'
 
@@ -27,15 +30,6 @@ import {
 interface FormData {
   name: string
   amount: string
-}
-
-type TransactionFormProps = {
-  id: string
-  name: string | undefined
-  amount: string | undefined
-  transactionType: string
-  category: string
-  date: Date
 }
 
 const schema = Yup.object().shape({
@@ -84,24 +78,24 @@ export function Register() {
       return Alert.alert('Atenção', 'Selecione o tipo da transação')
     }
 
-    if (category.key === 'category') {
-      return Alert.alert('Atenção', 'Selecione uma categoria')
-    }
+    // if (category.key === 'category') {
+    //   return Alert.alert('Atenção', 'Selecione uma categoria')
+    // }
 
-    const newTransaction: TransactionFormProps = {
+    const newTransaction: Transaction = {
       id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
       transactionType,
-      category: category.key,
+      category: 'food',
       date: new Date(),
     }
 
     try {
-      const data = await Storage.get<TransactionFormProps[]>()
+      const data = await Storage.get<Transaction[]>()
       const dataFormatted = [...data, newTransaction]
 
-      await Storage.save<TransactionFormProps[]>(dataFormatted)
+      await Storage.save<Transaction[]>(dataFormatted)
 
       setTransactionType('')
       setCategory(initialCategory)
@@ -158,10 +152,10 @@ export function Register() {
               />
             </TransactionsType>
 
-            <CategorySelectButton
+            {/* <CategorySelectButton
               title={category.name}
               onPress={handleOpenSelectCategoryModal}
-            />
+            /> */}
           </Fields>
 
           <Button title="Enviar" onPress={handleSubmit(handleRegister)} />
