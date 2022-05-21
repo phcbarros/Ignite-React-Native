@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Keyboard, Modal, TouchableWithoutFeedback, Alert} from 'react-native'
 import * as Yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useForm} from 'react-hook-form'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import {Button} from '../../components/Form/Button'
 import {CategorySelectButton} from '../../components/Form/CategorySelectButton'
@@ -34,6 +35,8 @@ const schema = Yup.object().shape({
     .required('Preço é obrigatório'),
 })
 
+const DATA_KEY = '@gofinances:transactions'
+
 export function Register() {
   const [transactionType, setTransactionType] = useState('')
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
@@ -63,7 +66,7 @@ export function Register() {
     setCategoryModalOpen(false)
   }
 
-  function handleRegister(form: Partial<FormData>) {
+  async function handleRegister(form: Partial<FormData>) {
     if (!transactionType) {
       return Alert.alert('Atenção', 'Selecione o tipo da transação')
     }
@@ -78,8 +81,23 @@ export function Register() {
       transactionType,
       category: category.key,
     }
-    console.log(data)
+
+    try {
+      await AsyncStorage.setItem(DATA_KEY, JSON.stringify(data))
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Atenção', 'Erro ao cadastrar transação')
+    }
   }
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await AsyncStorage.getItem(DATA_KEY)
+      console.log(data)
+    }
+
+    loadData()
+  }, [])
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
