@@ -4,7 +4,7 @@ import {RectButtonProps} from 'react-native-gesture-handler'
 import {Container, Button, Icon, Title} from './styles'
 
 interface Props extends RectButtonProps {
-  type: 'up' | 'down'
+  type: 'positive' | 'negative'
   title: string
   isActive: boolean
 }

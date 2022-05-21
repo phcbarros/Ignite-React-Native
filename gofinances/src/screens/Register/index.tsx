@@ -78,15 +78,15 @@ export function Register() {
       return Alert.alert('Atenção', 'Selecione o tipo da transação')
     }
 
-    // if (category.key === 'category') {
-    //   return Alert.alert('Atenção', 'Selecione uma categoria')
-    // }
+    if (category.key === 'category') {
+      return Alert.alert('Atenção', 'Selecione uma categoria')
+    }
 
     const newTransaction: Transaction = {
       id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
-      transactionType,
+      type: transactionType,
       category: 'food',
       date: new Date(),
     }
@@ -135,27 +135,27 @@ export function Register() {
 
             <TransactionsType>
               <TransactionTypeButton
-                type="up"
+                type="positive"
                 title="Income"
                 onPress={() =>
-                  handleTransactionTypeSelect(EnumTransactionsType.up)
+                  handleTransactionTypeSelect(EnumTransactionsType.positive)
                 }
-                isActive={transactionType === EnumTransactionsType.up}
+                isActive={transactionType === EnumTransactionsType.positive}
               />
               <TransactionTypeButton
-                type="down"
+                type="negative"
                 title="Outcome"
                 onPress={() =>
-                  handleTransactionTypeSelect(EnumTransactionsType.down)
+                  handleTransactionTypeSelect(EnumTransactionsType.negative)
                 }
-                isActive={transactionType === EnumTransactionsType.down}
+                isActive={transactionType === EnumTransactionsType.negative}
               />
             </TransactionsType>
 
-            {/* <CategorySelectButton
+            <CategorySelectButton
               title={category.name}
               onPress={handleOpenSelectCategoryModal}
-            /> */}
+            />
           </Fields>
 
           <Button title="Enviar" onPress={handleSubmit(handleRegister)} />

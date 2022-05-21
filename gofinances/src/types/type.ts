@@ -1,16 +1,17 @@
 export interface Type {
-  type: 'up' | 'down'
+  type: 'positive' | 'negative'
 }
 
 export enum TransactionsType {
-  up = 'up',
-  down = 'down',
+  positive = 'positive',
+  negative = 'negative',
 }
+
 export interface Transaction {
   id: string
   name: string | undefined
   amount: string | undefined
-  transactionType: string
+  type: string
   category: string
   date: Date
 }

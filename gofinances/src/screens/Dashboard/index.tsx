@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
+import {useFocusEffect} from '@react-navigation/native'
 import 'intl'
 import 'intl/locale-data/jsonp/pt-BR'
 
@@ -26,7 +27,6 @@ import {
   Title,
   TransactionList,
 } from './styles'
-import {categories} from '../../utils/categories'
 
 export interface DataListProps extends TransactionCardProps {
   id: string
@@ -35,44 +35,42 @@ export interface DataListProps extends TransactionCardProps {
 export function Dashboard() {
   const [data, setData] = useState<DataListProps[]>([] as DataListProps[])
 
-  useEffect(() => {
-    async function loadTransactions() {
-      const transactions = await Storage.get<Transaction[]>()
+  async function loadTransactions() {
+    const transactions = await Storage.get<Transaction[]>()
 
-      console.log(transactions)
+    const formattedTransactions: DataListProps[] = transactions.map(
+      (transaction) => {
+        const amount = Number(transaction.amount).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        })
 
-      const formattedTransactions: DataListProps[] = transactions.map(
-        (transaction) => {
-          const amount = Number(transaction.amount).toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          })
+        const date = Intl.DateTimeFormat('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit',
+        }).format(new Date(transaction.date))
 
-          const date = Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit',
-          }).format(new Date(transaction.date))
+        return {
+          id: transaction.id,
+          name: transaction.name,
+          amount,
+          date,
+          category: transaction.category,
+          type: transaction.type,
+        } as DataListProps
+      },
+    )
 
-          return {
-            id: transaction.id,
-            name: transaction.name,
-            amount,
-            date,
-            category: transaction.category,
-            type:
-              transaction.transactionType === TransactionsType.up
-                ? 'positive'
-                : 'negative',
-          } as unknown as DataListProps
-        },
-      )
+    setData(formattedTransactions)
+  }
 
-      setData(formattedTransactions)
-    }
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactions()
+    }, []),
+  )
 
-    loadTransactions()
-  }, [])
   return (
     <Container>
       <Header>
