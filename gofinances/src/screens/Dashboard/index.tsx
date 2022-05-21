@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {useFocusEffect} from '@react-navigation/native'
+import {useFocusEffect, useIsFocused} from '@react-navigation/native'
 import 'intl'
 import 'intl/locale-data/jsonp/pt-BR'
 
@@ -32,18 +32,48 @@ export interface DataListProps extends TransactionCardProps {
   id: string
 }
 
+type HighlightProps = {
+  amount: string
+}
+
+type HighLighData = {
+  entries: HighlightProps
+  expesives: HighlightProps
+  total: HighlightProps
+}
+
+const initialHighlightData: HighLighData = {
+  entries: {amount: formatCurrency(0)},
+  expesives: {amount: formatCurrency(0)},
+  total: {amount: formatCurrency(0)},
+}
+
 export function Dashboard() {
-  const [data, setData] = useState<DataListProps[]>([] as DataListProps[])
+  const isFocused = useIsFocused()
+
+  const [transactions, setTransactions] = useState<DataListProps[]>(
+    [] as DataListProps[],
+  )
+  const [highLighData, setHighLightData] =
+    useState<HighLighData>(initialHighlightData)
 
   async function loadTransactions() {
+    let entriesTotal = 0
+    let expensiveTotal = 0
+
     const transactions = await Storage.get<Transaction[]>()
 
     const formattedTransactions: DataListProps[] = transactions.map(
       (transaction) => {
-        const amount = Number(transaction.amount).toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        })
+        console.log(transaction)
+
+        const amount = Number(transaction.amount)
+
+        if (transaction.type === TransactionsType.positive) {
+          entriesTotal += amount
+        } else {
+          expensiveTotal += amount
+        }
 
         const date = Intl.DateTimeFormat('pt-BR', {
           day: '2-digit',
@@ -54,7 +84,7 @@ export function Dashboard() {
         return {
           id: transaction.id,
           name: transaction.name,
-          amount,
+          amount: formatCurrency(amount),
           date,
           category: transaction.category,
           type: transaction.type,
@@ -62,14 +92,26 @@ export function Dashboard() {
       },
     )
 
-    setData(formattedTransactions)
+    setHighLightData({
+      entries: {amount: formatCurrency(entriesTotal)},
+      expesives: {amount: formatCurrency(expensiveTotal)},
+      total: {amount: formatCurrency(entriesTotal - expensiveTotal)},
+    })
+
+    setTransactions(formattedTransactions)
   }
 
-  useFocusEffect(
-    useCallback(() => {
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     loadTransactions()
+  //   }, []),
+  // )
+
+  useEffect(() => {
+    if (isFocused) {
       loadTransactions()
-    }, []),
-  )
+    }
+  }, [isFocused])
 
   return (
     <Container>
@@ -95,19 +137,19 @@ export function Dashboard() {
       <HighlightCards>
         <HighlightCard
           title="Entradas"
-          amount="R$ 17.400,00"
+          amount={highLighData.entries.amount}
           lastTransaction="Última entrada dia 13 de abril"
           type="up"
         />
         <HighlightCard
           title="Saídas"
-          amount="R$ 1.259,00"
+          amount={highLighData.expesives.amount}
           lastTransaction="Última saída dia 03 de abril"
           type="down"
         />
         <HighlightCard
-          title="Saídas"
-          amount="R$ 16.141,00"
+          title="Total"
+          amount={highLighData.total.amount}
           lastTransaction="01 à 16 de abril"
           type="total"
         />
@@ -116,11 +158,18 @@ export function Dashboard() {
       <Transactions>
         <Title>Listagem</Title>
         <TransactionList
-          data={data}
+          data={transactions}
           keyExtractor={(item) => String(item.id)}
           renderItem={({item}) => <TransactionCard data={item} />}
         />
       </Transactions>
     </Container>
   )
+}
+
+function formatCurrency(value: number) {
+  return Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value)
 }
