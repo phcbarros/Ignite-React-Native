@@ -3,6 +3,8 @@ import {Keyboard, Modal, TouchableWithoutFeedback, Alert} from 'react-native'
 import * as Yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useForm} from 'react-hook-form'
+import {useNavigation} from '@react-navigation/native'
+import uuid from 'react-native-uuid'
 
 import {Button} from '../../components/Form/Button'
 import {CategorySelectButton} from '../../components/Form/CategorySelectButton'
@@ -28,10 +30,12 @@ interface FormData {
 }
 
 type TransactionFormProps = {
+  id: string
   name: string | undefined
   amount: string | undefined
   transactionType: string
   category: string
+  date: Date
 }
 
 const schema = Yup.object().shape({
@@ -42,20 +46,23 @@ const schema = Yup.object().shape({
     .required('Preço é obrigatório'),
 })
 
+const initialCategory = {
+  key: 'category',
+  name: 'Categoria',
+}
+
 export function Register() {
+  const navigation = useNavigation()
   const [transactionType, setTransactionType] = useState('')
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
 
-  const [category, setCategory] = useState({
-    key: 'category',
-    name: 'Categoria',
-  })
+  const [category, setCategory] = useState(initialCategory)
 
   const {
     control,
     handleSubmit,
     formState: {errors},
-    resetField,
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   })
@@ -82,33 +89,30 @@ export function Register() {
     }
 
     const newTransaction: TransactionFormProps = {
+      id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
       transactionType,
       category: category.key,
+      date: new Date(),
     }
 
     try {
       const data = await Storage.get<TransactionFormProps[]>()
       const dataFormatted = [...data, newTransaction]
+
       await Storage.save<TransactionFormProps[]>(dataFormatted)
 
-      resetField('name')
-      resetField('amount')
+      setTransactionType('')
+      setCategory(initialCategory)
+      reset()
+
+      navigation.navigate('Dashboard')
     } catch (error) {
       console.log(error)
       Alert.alert('Atenção', 'Erro ao cadastrar transação')
     }
   }
-
-  useEffect(() => {
-    async function loadData() {
-      const data = await Storage.get<TransactionFormProps[]>()
-      console.log(data)
-    }
-
-    loadData()
-  }, [])
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
