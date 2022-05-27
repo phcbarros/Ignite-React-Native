@@ -87,7 +87,7 @@ export function Register() {
       name: form.name,
       amount: form.amount,
       type: transactionType,
-      category: 'food',
+      category: category.key,
       date: new Date(),
     }
 
@@ -138,17 +138,17 @@ export function Register() {
                 type="positive"
                 title="Income"
                 onPress={() =>
-                  handleTransactionTypeSelect(EnumTransactionsType.positive)
+                  handleTransactionTypeSelect(EnumTransactionsType.POSITIVE)
                 }
-                isActive={transactionType === EnumTransactionsType.positive}
+                isActive={transactionType === EnumTransactionsType.POSITIVE}
               />
               <TransactionTypeButton
                 type="negative"
                 title="Outcome"
                 onPress={() =>
-                  handleTransactionTypeSelect(EnumTransactionsType.negative)
+                  handleTransactionTypeSelect(EnumTransactionsType.NEGATIVE)
                 }
-                isActive={transactionType === EnumTransactionsType.negative}
+                isActive={transactionType === EnumTransactionsType.NEGATIVE}
               />
             </TransactionsType>
 

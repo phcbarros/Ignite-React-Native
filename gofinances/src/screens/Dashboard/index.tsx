@@ -10,8 +10,10 @@ import {
   TransactionCard,
   TransactionCardProps,
 } from '../../components/TransactionCard'
+
 import {Storage} from '../../infrastructure/storage'
 import {Transaction, TransactionsType} from '../../types/type'
+import {formatCurrency} from '../../utils/formatCurrency'
 
 import {LoadingContainer} from './styles'
 
@@ -67,11 +69,9 @@ export function Dashboard() {
 
     const formattedTransactions: DataListProps[] = transactions.map(
       (transaction) => {
-        console.log(transaction)
-
         const amount = Number(transaction.amount)
 
-        if (transaction.type === TransactionsType.positive) {
+        if (transaction.type === TransactionsType.POSITIVE) {
           entriesTotal += amount
         } else {
           expensiveTotal += amount
@@ -96,11 +96,11 @@ export function Dashboard() {
 
     const lastTransactionEntries = getLastTransactionDate(
       transactions,
-      TransactionsType.positive,
+      TransactionsType.POSITIVE,
     )
     const lastTransactionExpensives = getLastTransactionDate(
       transactions,
-      TransactionsType.negative,
+      TransactionsType.NEGATIVE,
     )
     const totalInterval = `01 a ${lastTransactionExpensives}`
 
@@ -195,13 +195,6 @@ export function Dashboard() {
       )}
     </Container>
   )
-}
-
-function formatCurrency(value: number) {
-  return value.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  })
 }
 
 function getLastTransactionDate(

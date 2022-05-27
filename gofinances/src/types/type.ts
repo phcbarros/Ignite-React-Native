@@ -3,8 +3,8 @@ export interface Type {
 }
 
 export enum TransactionsType {
-  positive = 'positive',
-  negative = 'negative',
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
 }
 
 export interface Transaction {
