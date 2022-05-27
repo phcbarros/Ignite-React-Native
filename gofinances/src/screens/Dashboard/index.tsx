@@ -1,7 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import {useFocusEffect, useIsFocused} from '@react-navigation/native'
-import {ActivityIndicator} from 'react-native'
-import {useTheme} from 'styled-components'
+import React, {useEffect, useState} from 'react'
+import {useIsFocused} from '@react-navigation/native'
 import 'intl'
 import 'intl/locale-data/jsonp/pt-BR'
 
@@ -49,7 +47,6 @@ type HighLighData = {
 }
 
 export function Dashboard() {
-  const theme = useTheme()
   const isFocused = useIsFocused()
 
   const [isLoading, setIsLoading] = useState(true)
@@ -121,12 +118,6 @@ export function Dashboard() {
     setTransactions(formattedTransactions)
     setIsLoading(false)
   }
-
-  // useFocusEffect(
-  //   useCallback(() => {r
-  //     loadTransactions()
-  //   }, []),
-  // )
 
   useEffect(() => {
     if (isFocused) {

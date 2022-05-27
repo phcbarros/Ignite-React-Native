@@ -42,16 +42,16 @@ export function Resume() {
 
   const [totalByCategories, setTotalByCategories] = useState<CaterogyData[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   function handleDateChange(action: 'next' | 'prev') {
-    setIsLoading(true)
     return action === 'next'
       ? setSelectedDate(addMonths(selectedDate, 1))
       : setSelectedDate(subMonths(selectedDate, 1))
   }
 
   async function loadData() {
+    setIsLoading(true)
     const transactions = await Storage.get<Transaction[]>()
 
     const expensives = transactions.filter(
