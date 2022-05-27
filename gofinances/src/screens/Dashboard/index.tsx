@@ -10,12 +10,11 @@ import {
   TransactionCard,
   TransactionCardProps,
 } from '../../components/TransactionCard'
+import {Loading} from '../../components/Loading'
 
 import {Storage} from '../../infrastructure/storage'
 import {Transaction, TransactionsType} from '../../types/type'
 import {formatCurrency} from '../../utils/formatCurrency'
-
-import {LoadingContainer} from './styles'
 
 import {
   Container,
@@ -138,9 +137,7 @@ export function Dashboard() {
   return (
     <Container>
       {isLoading ? (
-        <LoadingContainer>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-        </LoadingContainer>
+        <Loading />
       ) : (
         <>
           <Header>
