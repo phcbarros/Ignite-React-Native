@@ -14,6 +14,8 @@ import {AppRoutes} from './src/routes/app.routes'
 
 import theme from './src/global/styles/theme'
 
+import {Signin} from './src/screens/Signin'
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -29,7 +31,8 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <NavigationContainer>
         <StatusBar barStyle="light-content" />
-        <AppRoutes />
+        {/* <AppRoutes /> */}
+        <Signin />
       </NavigationContainer>
     </ThemeProvider>
   )

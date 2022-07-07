@@ -21,7 +21,7 @@ import {
   UserInfo,
   Photo,
   User,
-  UserGreetting,
+  UserGreeting,
   UserName,
   LogoutButton,
   Icon,
@@ -42,7 +42,7 @@ type HighlightProps = {
 
 type HighLighData = {
   entries: HighlightProps
-  expesives: HighlightProps
+  expenses: HighlightProps
   total: HighlightProps
 }
 
@@ -94,20 +94,20 @@ export function Dashboard() {
       transactions,
       TransactionsType.POSITIVE,
     )
-    const lastTransactionExpensives = getLastTransactionDate(
+    const lastTransactionExpenses = getLastTransactionDate(
       transactions,
       TransactionsType.NEGATIVE,
     )
-    const totalInterval = `01 a ${lastTransactionExpensives}`
+    const totalInterval = `01 a ${lastTransactionExpenses}`
 
     setHighLightData({
       entries: {
         amount: formatCurrency(entriesTotal),
         lastTransaction: lastTransactionEntries,
       },
-      expesives: {
+      expenses: {
         amount: formatCurrency(expensiveTotal),
-        lastTransaction: lastTransactionExpensives,
+        lastTransaction: lastTransactionExpenses,
       },
       total: {
         amount: formatCurrency(entriesTotal - expensiveTotal),
@@ -140,7 +140,7 @@ export function Dashboard() {
                   }}
                 />
                 <User>
-                  <UserGreetting>Olá,</UserGreetting>
+                  <UserGreeting>Olá,</UserGreeting>
                   <UserName>Paulo Barros</UserName>
                 </User>
               </UserInfo>
@@ -159,8 +159,8 @@ export function Dashboard() {
             />
             <HighlightCard
               title="Saídas"
-              amount={highLighData.expesives.amount}
-              lastTransaction={`Última saída dia ${highLighData.expesives.lastTransaction}`}
+              amount={highLighData.expenses.amount}
+              lastTransaction={`Última saída dia ${highLighData.expenses.lastTransaction}`}
               type="down"
             />
             <HighlightCard

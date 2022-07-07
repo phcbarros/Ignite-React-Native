@@ -47,14 +47,14 @@ export const User = styled.View`
   margin-left: 17px;
 `
 
-export const UserGreetting = styled.Text`
+export const UserGreeting = styled.Text`
   color: ${({theme}) => theme.colors.shape};
 
   font-family: ${({theme}) => theme.fonts.regular};
   font-size: ${RFValue(18)}px;
 `
 
-export const UserName = styled(UserGreetting)`
+export const UserName = styled(UserGreeting)`
   font-family: ${({theme}) => theme.fonts.bold};
 `
 
