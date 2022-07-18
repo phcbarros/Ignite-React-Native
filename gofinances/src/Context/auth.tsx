@@ -1,5 +1,7 @@
 import React, {createContext} from 'react'
 import * as AuthSession from 'expo-auth-session'
+import * as AppleAuthentication from 'expo-apple-authentication'
+import {Storage} from '../infrastructure/storage'
 
 const {CLIENT_ID} = process.env
 const {REDIRECT_URI} = process.env
@@ -18,6 +20,7 @@ interface User {
 interface AuthContextData {
   user: User
   signInWithGoogle: () => Promise<void>
+  signInWithApple: () => Promise<void>
 }
 
 interface AuthorizationResponse {
@@ -48,15 +51,47 @@ function AuthProvider({children}: AuthProviderProps) {
         )
         const userInfo = await response.json()
 
-        setUser({
+        const loggedUser = {
           id: userInfo.id,
           email: userInfo.email,
           name: userInfo.given_name,
           photo: userInfo.picture,
-        })
+        }
+
+        setUser(loggedUser)
+
+        await Storage.save(loggedUser, '@gofinances:user')
       }
     } catch (error) {
-      throw new Error(error)
+      throw new Error(error as string)
+    }
+  }
+
+  async function signInWithApple() {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      })
+
+      console.log('credential', credential)
+
+      if (credential) {
+        const loggedUser = {
+          id: String(credential.user),
+          email: credential.email!,
+          name: credential.fullName?.givenName!,
+          photo: undefined,
+        }
+
+        setUser(loggedUser)
+
+        await Storage.save(loggedUser, '@gofinances:user')
+      }
+    } catch (error) {
+      throw new Error(error as string)
     }
   }
 
@@ -65,6 +100,7 @@ function AuthProvider({children}: AuthProviderProps) {
       value={{
         user,
         signInWithGoogle,
+        signInWithApple,
       }}>
       {children}
     </AuthContext.Provider>

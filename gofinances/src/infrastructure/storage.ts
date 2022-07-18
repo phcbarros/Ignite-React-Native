@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const DATA_KEY = '@gofinances:transactions'
 
-function save<TObj>(data: TObj) {
-  return AsyncStorage.setItem(DATA_KEY, JSON.stringify(data))
+function save<TObj>(data: TObj, key: string = DATA_KEY) {
+  return AsyncStorage.setItem(key, JSON.stringify(data))
 }
 
 async function get<TObj>() {
