@@ -31,6 +31,7 @@ import {
   TransactionList,
 } from './styles'
 import {useAuth} from '../../context/auth'
+import {TRANSACTIONS_KEY} from '../Register'
 
 export interface DataListProps extends TransactionCardProps {
   id: string
@@ -60,10 +61,11 @@ export function Dashboard() {
   )
 
   async function loadTransactions() {
+    const dataKey = `${TRANSACTIONS_KEY}${user.id}`
     let entriesTotal = 0
     let expensiveTotal = 0
 
-    const transactions = await Storage.get<Transaction[]>()
+    const transactions = await Storage.get<Transaction[]>(dataKey)
 
     const formattedTransactions: DataListProps[] = transactions.map(
       (transaction) => {

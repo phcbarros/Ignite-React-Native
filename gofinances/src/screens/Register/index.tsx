@@ -26,6 +26,7 @@ import {
   Fields,
   TransactionsType,
 } from './styles'
+import {useAuth} from '../../context/auth'
 
 interface FormData {
   name: string
@@ -45,11 +46,14 @@ const initialCategory = {
   name: 'Categoria',
 }
 
+export const TRANSACTIONS_KEY = '@gofinances:transactions_user:'
+
 export function Register() {
   const navigation = useNavigation()
+  const {user} = useAuth()
+
   const [transactionType, setTransactionType] = useState('')
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
-
   const [category, setCategory] = useState(initialCategory)
 
   const {
@@ -92,10 +96,11 @@ export function Register() {
     }
 
     try {
-      const data = await Storage.get<Transaction[]>()
+      const dataKey = `${TRANSACTIONS_KEY}${user.id}`
+      const data = await Storage.get<Transaction[]>(dataKey)
       const dataFormatted = [...data, newTransaction]
 
-      await Storage.save<Transaction[]>(dataFormatted)
+      await Storage.save<Transaction[]>(dataFormatted, dataKey)
 
       setTransactionType('')
       setCategory(initialCategory)

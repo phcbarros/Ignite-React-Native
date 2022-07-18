@@ -26,12 +26,14 @@ import {
 } from './styles'
 import {VictoryPie} from 'victory-native'
 import {Loading} from '../../components/Loading'
+import {useAuth} from '../../context/auth'
+import {TRANSACTIONS_KEY} from '../Register'
 
-type CaterogyData = {
+type CategoryData = {
   key: string
   name: string
   color: string
-  totalFormated: string
+  totalFormatted: string
   total: number
   percent: string
 }
@@ -39,8 +41,9 @@ type CaterogyData = {
 export function Resume() {
   const theme = useTheme()
   const bottomTabBarHeight = useBottomTabBarHeight()
+  const {user} = useAuth()
 
-  const [totalByCategories, setTotalByCategories] = useState<CaterogyData[]>([])
+  const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [isLoading, setIsLoading] = useState(false)
 
@@ -52,24 +55,25 @@ export function Resume() {
 
   async function loadData() {
     setIsLoading(true)
-    const transactions = await Storage.get<Transaction[]>()
+    const dataKey = `${TRANSACTIONS_KEY}${user.id}`
+    const transactions = await Storage.get<Transaction[]>(dataKey)
 
-    const expensives = transactions.filter(
+    const spending = transactions.filter(
       (transaction) =>
         transaction.type === TransactionsType.NEGATIVE &&
         new Date(transaction.date).getMonth() === selectedDate.getMonth() &&
         new Date(transaction.date).getFullYear() === selectedDate.getFullYear(),
     )
 
-    const expensiveTotal = expensives.reduce(
+    const expensiveTotal = spending.reduce(
       (acc, expensive) => acc + Number(expensive.amount),
       0,
     )
 
-    const totalByCategory: CaterogyData[] = []
+    const totalByCategory: CategoryData[] = []
 
     categories.forEach((category) => {
-      const total = expensives
+      const total = spending
         .filter((transaction) => transaction.category === category.key)
         .reduce((acc, transaction) => {
           return acc + Number(transaction.amount)
@@ -82,7 +86,7 @@ export function Resume() {
           key: category.key,
           name: category.name,
           color: category.color,
-          totalFormated: formatCurrency(total),
+          totalFormatted: formatCurrency(total),
           total,
           percent,
         })
@@ -143,7 +147,7 @@ export function Resume() {
             <HistoryCard
               key={item.key}
               color={item.color}
-              amount={item.totalFormated}
+              amount={item.totalFormatted}
               title={item.name}
             />
           ))}
