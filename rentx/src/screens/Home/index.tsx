@@ -6,7 +6,7 @@ import Logo from '../../assets/logo.svg'
 
 import {Car} from '../../components/Car'
 
-import {Container, Header, HeaderContent, TotalCars} from './styles'
+import {Container, Header, HeaderContent, TotalCars, CarList} from './styles'
 
 const car = {
   brand: 'Audi',
@@ -34,8 +34,11 @@ export function Home() {
         </HeaderContent>
       </Header>
 
-      <Car data={car}></Car>
-      <Car data={car}></Car>
+      <CarList
+        data={[1, 2, 3, 4, 5, 6, 7]}
+        keyExtractor={(item) => String(item)}
+        renderItem={({item}) => <Car data={car} />}
+      />
     </Container>
   )
 }

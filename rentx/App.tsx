@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {View} from 'react-native'
-
 import {
   Archivo_400Regular,
   Archivo_500Medium,
@@ -14,6 +13,7 @@ import {ThemeProvider} from 'styled-components'
 import {Home} from './src/screens/Home'
 
 import theme from './src/styles/theme'
+import {CarDetails} from './src/screens/CarDetails'
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false)
@@ -56,7 +56,7 @@ export default function App() {
         flex: 1,
       }}>
       <ThemeProvider theme={theme}>
-        <Home />
+        <CarDetails />
       </ThemeProvider>
     </View>
   )
