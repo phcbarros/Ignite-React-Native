@@ -31,7 +31,6 @@ export function SignIn() {
       return await signInWithGoogle()
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível fazer login com o Google')
-    } finally {
       setIsLoading(false)
     }
   }
@@ -42,7 +41,6 @@ export function SignIn() {
       return await signInWithApple()
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível fazer login com a Apple')
-    } finally {
       setIsLoading(false)
     }
   }
