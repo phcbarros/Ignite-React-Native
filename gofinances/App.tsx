@@ -9,8 +9,6 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins'
 
-import {NavigationContainer} from '@react-navigation/native'
-
 import {Routes} from './src/routes'
 
 import theme from './src/global/styles/theme'

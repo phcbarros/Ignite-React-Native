@@ -20,8 +20,10 @@ interface User {
 
 interface AuthContextData {
   user: User
+  loading: boolean
   signInWithGoogle: () => Promise<void>
   signInWithApple: () => Promise<void>
+  signOut: () => Promise<void>
 }
 
 interface AuthorizationResponse {
@@ -85,7 +87,7 @@ function AuthProvider({children}: AuthProviderProps) {
           id: String(credential.user),
           email: credential.email!,
           name: credential.fullName?.givenName!,
-          photo: undefined,
+          photo: `https://ui-avatars.com/api/?name=${credential.fullName?.namePrefix}+${credential.fullName?.nameSuffix}&length=1`,
         }
 
         setUser(loggedUser)
@@ -95,6 +97,13 @@ function AuthProvider({children}: AuthProviderProps) {
     } catch (error) {
       throw new Error(error as string)
     }
+  }
+
+  async function signOut() {
+    setLoading(true)
+    setUser({} as User)
+    await Storage.deleteAll(USER_STORAGE_KEY)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -115,8 +124,10 @@ function AuthProvider({children}: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         user,
+        loading,
         signInWithGoogle,
         signInWithApple,
+        signOut,
       }}>
       {children}
     </AuthContext.Provider>
@@ -125,6 +136,10 @@ function AuthProvider({children}: AuthProviderProps) {
 
 const useAuth = () => {
   const context = React.useContext(AuthContext)
+
+  if (!context) {
+    throw new Error('useAuth must be used inside AuthProvider')
+  }
 
   return context
 }

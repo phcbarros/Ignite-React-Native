@@ -1,4 +1,6 @@
 import React from 'react'
+import {useTheme} from 'styled-components'
+import {ActivityIndicator, Alert} from 'react-native'
 import {RFValue} from 'react-native-responsive-fontsize'
 
 import {
@@ -17,24 +19,31 @@ import LogoSvg from '../../assets/logo.svg'
 
 import {SignInSocialButton} from '../../components/SignInSocialButton'
 import {useAuth} from '../../context/auth'
-import {Alert} from 'react-native'
 
 export function SignIn() {
   const {signInWithGoogle, signInWithApple} = useAuth()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const theme = useTheme()
 
   async function handleSignInWithGoogle() {
     try {
-      await signInWithGoogle()
+      setIsLoading(true)
+      return await signInWithGoogle()
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível fazer login com o Google')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   async function handleSignInWithApple() {
     try {
-      await signInWithApple()
+      setIsLoading(true)
+      return await signInWithApple()
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível fazer login com a Apple')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -67,6 +76,14 @@ export function SignIn() {
             onPress={handleSignInWithApple}
           />
         </FooterWrapper>
+
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.shape}
+            style={{marginTop: 18}}
+          />
+        )}
       </Footer>
     </Container>
   )

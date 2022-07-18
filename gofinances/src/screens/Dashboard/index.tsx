@@ -30,6 +30,7 @@ import {
   Title,
   TransactionList,
 } from './styles'
+import {useAuth} from '../../context/auth'
 
 export interface DataListProps extends TransactionCardProps {
   id: string
@@ -48,6 +49,7 @@ type HighLighData = {
 
 export function Dashboard() {
   const isFocused = useIsFocused()
+  const {signOut, user} = useAuth()
 
   const [isLoading, setIsLoading] = useState(true)
   const [transactions, setTransactions] = useState<DataListProps[]>(
@@ -136,15 +138,15 @@ export function Dashboard() {
               <UserInfo>
                 <Photo
                   source={{
-                    uri: 'https://avatars.githubusercontent.com/u/12138058?v=4',
+                    uri: user.photo,
                   }}
                 />
                 <User>
                   <UserGreeting>Olá,</UserGreeting>
-                  <UserName>Paulo Barros</UserName>
+                  <UserName>{user.name.replace('da', '')}</UserName>
                 </User>
               </UserInfo>
-              <LogoutButton onPress={() => {}}>
+              <LogoutButton onPress={signOut}>
                 <Icon name="power" />
               </LogoutButton>
             </UserWrapper>
