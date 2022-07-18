@@ -193,12 +193,20 @@ function getLastTransactionDate(
   transactions: Transaction[],
   type: TransactionsType,
 ) {
+  const collectionFiltered = transactions.filter(
+    (transaction) => transaction.type === type,
+  )
+
+  if (collectionFiltered.length === 0) {
+    return 'Não há transações'
+  }
+
   const lastTransaction = new Date(
     Math.max.apply(
       Math,
-      transactions
-        .filter((transaction) => transaction.type === type)
-        .map((transaction) => new Date(transaction.date).getTime()),
+      collectionFiltered.map((transaction) =>
+        new Date(transaction.date).getTime(),
+      ),
     ),
   )
 
