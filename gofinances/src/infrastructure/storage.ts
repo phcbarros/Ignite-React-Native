@@ -6,13 +6,13 @@ function save<TObj>(data: TObj, key: string = DATA_KEY) {
   return AsyncStorage.setItem(key, JSON.stringify(data))
 }
 
-async function get<TObj>() {
-  const data = await AsyncStorage.getItem(DATA_KEY)
-  return (data ? JSON.parse(data) : []) as TObj
+async function get<TObj>(key: string = DATA_KEY, defaultValue: unknown = []) {
+  const data = await AsyncStorage.getItem(key)
+  return (data ? JSON.parse(data) : defaultValue) as TObj
 }
 
-async function deleteAll<TObj>() {
-  const data = await AsyncStorage.removeItem(DATA_KEY)
+async function deleteAll<TObj>(key: string = DATA_KEY) {
+  const data = await AsyncStorage.removeItem(key)
 }
 
 export const Storage = {save, get, deleteAll}
