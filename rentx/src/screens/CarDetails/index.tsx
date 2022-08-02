@@ -1,5 +1,13 @@
 import {BackButton} from '../../components/BackButton'
 import {ImageSlider} from '../../components/ImageSlider'
+import {Accessory} from '../../components/Accessory'
+
+import speedSVG from '../../assets/speed.svg'
+import accelerationSVG from '../../assets/acceleration.svg'
+import forceSVG from '../../assets/force.svg'
+import gasolineSVG from '../../assets/gasoline.svg'
+import exchangeVG from '../../assets/exchange.svg'
+import peopleSVG from '../../assets/people.svg'
 
 import {
   Container,
@@ -14,6 +22,7 @@ import {
   Period,
   Price,
   About,
+  Accessories,
 } from './styles'
 
 export function CarDetails() {
@@ -41,6 +50,15 @@ export function CarDetails() {
             <Price>R$ 580</Price>
           </Rent>
         </Details>
+
+        <Accessories>
+          <Accessory name="380km/h" icon={speedSVG} />
+          <Accessory name="3,2s" icon={accelerationSVG} />
+          <Accessory name="800 HP" icon={forceSVG} />
+          <Accessory name="Gasolina" icon={gasolineSVG} />
+          <Accessory name="Auto" icon={exchangeVG} />
+          <Accessory name="2 pessoas" icon={peopleSVG} />
+        </Accessories>
 
         <About>
           Este é automóvel desportivo. Surgiu do lendário touro de lide
