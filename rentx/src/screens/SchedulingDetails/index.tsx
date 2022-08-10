@@ -1,6 +1,7 @@
 import {RFValue} from 'react-native-responsive-fontsize'
 import {Feather} from '@expo/vector-icons'
 import {useTheme} from 'styled-components'
+import {useNavigation} from '@react-navigation/native'
 
 import {BackButton} from '../../components/BackButton'
 import {ImageSlider} from '../../components/ImageSlider'
@@ -42,6 +43,12 @@ import {
 
 export function SchedulingDetails() {
   const theme = useTheme()
+  const navigation = useNavigation()
+
+  function handleSchedulingComplete() {
+    navigation.navigate('SchedulingComplete')
+  }
+
   return (
     <Container>
       <Header>
@@ -114,7 +121,7 @@ export function SchedulingDetails() {
       <Footer>
         <Button
           title="Alugar agora"
-          onPress={() => {}}
+          onPress={handleSchedulingComplete}
           color={theme.colors.success}
         />
       </Footer>

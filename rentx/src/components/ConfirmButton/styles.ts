@@ -1,8 +1,9 @@
 import styled from 'styled-components/native'
 import {RFValue} from 'react-native-responsive-fontsize'
 import {RectButton, RectButtonProps} from 'react-native-gesture-handler'
+import {PropsWithChildren} from 'React'
 
-interface ButtonProps extends RectButtonProps {
+interface ButtonProps extends PropsWithChildren<RectButtonProps> {
   color?: string
 }
 

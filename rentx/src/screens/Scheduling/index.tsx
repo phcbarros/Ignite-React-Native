@@ -1,6 +1,7 @@
 import {useTheme} from 'styled-components'
 import {StatusBar} from 'react-native'
 
+import {useNavigation} from '@react-navigation/native'
 import {BackButton} from '../../components/BackButton'
 import {Button} from '../../components/Button'
 
@@ -22,6 +23,12 @@ import {Calendar} from '../../components/Calendar'
 
 export function Scheduling() {
   const theme = useTheme()
+  const navigation = useNavigation()
+
+  function handleSchedulingDetails() {
+    navigation.navigate('SchedulingDetails')
+  }
+
   return (
     <Container>
       <StatusBar
@@ -42,7 +49,7 @@ export function Scheduling() {
           <DateInfo>
             <DateTitle>DE</DateTitle>
             <DateValueContainer selected={false}>
-              <DateValue selected={false}></DateValue>
+              <DateValue></DateValue>
             </DateValueContainer>
           </DateInfo>
 
@@ -62,7 +69,7 @@ export function Scheduling() {
       </Content>
 
       <Footer>
-        <Button title="Confirmar" onPress={() => {}} />
+        <Button title="Confirmar" onPress={handleSchedulingDetails} />
       </Footer>
     </Container>
   )
