@@ -8,7 +8,7 @@ interface Props {
   onPress: () => void
 }
 
-export function Button({title, color, onPress, ...rest}: Props) {
+export function ConfirmButton({title, color, onPress, ...rest}: Props) {
   const theme = useTheme()
 
   return (
