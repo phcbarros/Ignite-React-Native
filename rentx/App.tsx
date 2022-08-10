@@ -10,11 +10,12 @@ import * as SplashScreen from 'expo-splash-screen'
 import * as Font from 'expo-font'
 import {ThemeProvider} from 'styled-components'
 
-import {Home} from './src/screens/Home'
-
 import theme from './src/styles/theme'
+
+import {Home} from './src/screens/Home'
 import {CarDetails} from './src/screens/CarDetails'
 import {Scheduling} from './src/screens/Scheduling'
+import {SchedulingDetails} from './src/screens/SchedulingDetails'
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false)
@@ -57,7 +58,7 @@ export default function App() {
         flex: 1,
       }}>
       <ThemeProvider theme={theme}>
-        <Scheduling />
+        <SchedulingDetails />
       </ThemeProvider>
     </View>
   )
