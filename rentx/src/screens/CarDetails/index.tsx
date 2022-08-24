@@ -29,8 +29,16 @@ import {
   Footer,
 } from './styles'
 
-export function CarDetails() {
+import {AppRoutes} from '../../routes/stack.routes'
+import {StackScreenProps} from '@react-navigation/stack'
+
+type CarDetailProps = StackScreenProps<AppRoutes, 'CarDetails'>
+
+export function CarDetails({route}: CarDetailProps) {
   const navigation = useNavigation()
+  const {car} = route.params
+
+  console.log(car.accessories)
 
   function handleConfirmRental() {
     navigation.navigate('Scheduling')
@@ -39,42 +47,37 @@ export function CarDetails() {
   return (
     <Container>
       <Header>
-        <BackButton onPress={() => {}} />
+        <BackButton onPress={() => navigation.goBack()} />
       </Header>
 
       <CardImage>
-        <ImageSlider
-          imagesUrl={['https://www.pngmart.com/files/1/Audi-RS5-Red-PNG.png']}
-        />
+        <ImageSlider imagesUrl={car.photos} />
       </CardImage>
 
       <Content>
         <Details>
           <Description>
-            <Brand>Lamborghini</Brand>
-            <Name>Huracan</Name>
+            <Brand>{car.brand}</Brand>
+            <Name>{car.name}</Name>
           </Description>
 
           <Rent>
-            <Period>Ao dia</Period>
-            <Price>R$ 580</Price>
+            <Period>{car.rent.period}</Period>
+            <Price>R$ {car.rent.price}</Price>
           </Rent>
         </Details>
 
         <Accessories>
-          <Accessory name="380km/h" icon={speedSVG} />
-          <Accessory name="3,2s" icon={accelerationSVG} />
-          <Accessory name="800 HP" icon={forceSVG} />
-          <Accessory name="Gasolina" icon={gasolineSVG} />
-          <Accessory name="Auto" icon={exchangeVG} />
-          <Accessory name="2 pessoas" icon={peopleSVG} />
+          {car.accessories.map((accessory) => (
+            <Accessory
+              key={accessory.type}
+              name={accessory.name}
+              icon={speedSVG}
+            />
+          ))}
         </Accessories>
 
-        <About>
-          Este é automóvel desportivo. Surgiu do lendário touro de lide
-          indultado na praça Real Maestranza de Sevilla. É um belíssimo carro
-          para quem gosta de acelerar.
-        </About>
+        <About>{car.about}</About>
       </Content>
 
       <Footer>

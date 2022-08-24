@@ -13,23 +13,13 @@ import {CarDTO} from '../../dtos/CarDTO'
 
 import {Container, Header, HeaderContent, TotalCars, CarList} from './styles'
 
-const car = {
-  brand: 'Audi',
-  name: 'RS5',
-  rent: {
-    period: 'Ao dia',
-    price: 120,
-  },
-  thumbnail: 'https://www.pngmart.com/files/1/Audi-RS5-Red-PNG.png',
-}
-
 export function Home() {
   const [cars, setCars] = useState<CarDTO[]>([])
   const [loading, setLoading] = useState(true)
   const navigation = useNavigation()
 
-  function handleCarDetails() {
-    navigation.navigate('CarDetails')
+  function handleCarDetails(car: CarDTO) {
+    navigation.navigate('CarDetails', {car})
   }
 
   useEffect(() => {
@@ -70,7 +60,7 @@ export function Home() {
           data={cars}
           keyExtractor={(item) => item.id}
           renderItem={({item}) => (
-            <Car data={item} onPress={handleCarDetails} />
+            <Car data={item} onPress={() => handleCarDetails(item)} />
           )}
         />
       )}
