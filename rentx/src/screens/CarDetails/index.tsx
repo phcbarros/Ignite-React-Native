@@ -1,16 +1,14 @@
 import {useNavigation} from '@react-navigation/native'
+import {StackScreenProps} from '@react-navigation/stack'
 
 import {BackButton} from '../../components/BackButton'
 import {ImageSlider} from '../../components/ImageSlider'
 import {Accessory} from '../../components/Accessory'
 import {Button} from '../../components/Button'
 
-import speedSVG from '../../assets/speed.svg'
-import accelerationSVG from '../../assets/acceleration.svg'
-import forceSVG from '../../assets/force.svg'
-import gasolineSVG from '../../assets/gasoline.svg'
-import exchangeVG from '../../assets/exchange.svg'
-import peopleSVG from '../../assets/people.svg'
+import {AppRoutes} from '../../routes/stack.routes'
+
+import {getAccessoryIcon} from '../../utils/getAccessory'
 
 import {
   Container,
@@ -28,9 +26,6 @@ import {
   Accessories,
   Footer,
 } from './styles'
-
-import {AppRoutes} from '../../routes/stack.routes'
-import {StackScreenProps} from '@react-navigation/stack'
 
 type CarDetailProps = StackScreenProps<AppRoutes, 'CarDetails'>
 
@@ -72,7 +67,7 @@ export function CarDetails({route}: CarDetailProps) {
             <Accessory
               key={accessory.type}
               name={accessory.name}
-              icon={speedSVG}
+              icon={getAccessoryIcon(accessory.type)}
             />
           ))}
         </Accessories>
