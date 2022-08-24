@@ -14,19 +14,10 @@ import {
 } from './styles'
 
 import GasolineSVG from '../../assets/gasoline.svg'
+import {CarDTO} from '../../dtos/CarDTO'
 
-interface CarData extends RectButtonProps {
-  brand: string
-  name: string
-  rent: {
-    period: string
-    price: number
-  }
-  thumbnail: string
-}
-
-interface Props {
-  data: CarData
+interface Props extends RectButtonProps {
+  data: CarDTO
 }
 
 export function Car({data, ...rest}: Props) {
