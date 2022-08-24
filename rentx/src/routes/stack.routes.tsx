@@ -11,7 +11,7 @@ import {CarDTO} from '../dtos/CarDTO'
 export type AppRoutes = {
   Home: undefined
   CarDetails: {car: CarDTO}
-  Scheduling: undefined
+  Scheduling: {car: CarDTO}
   SchedulingDetails: undefined
   SchedulingComplete: undefined
 }

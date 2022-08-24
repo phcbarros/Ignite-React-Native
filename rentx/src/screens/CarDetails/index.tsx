@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
 
 import {BackButton} from '../../components/BackButton'
@@ -7,6 +6,7 @@ import {Accessory} from '../../components/Accessory'
 import {Button} from '../../components/Button'
 
 import {AppRoutes} from '../../routes/stack.routes'
+import {CarDTO} from '../../dtos/CarDTO'
 
 import {getAccessoryIcon} from '../../utils/getAccessory'
 
@@ -29,14 +29,11 @@ import {
 
 type CarDetailProps = StackScreenProps<AppRoutes, 'CarDetails'>
 
-export function CarDetails({route}: CarDetailProps) {
-  const navigation = useNavigation()
+export function CarDetails({route, navigation}: CarDetailProps) {
   const {car} = route.params
 
-  console.log(car.accessories)
-
-  function handleConfirmRental() {
-    navigation.navigate('Scheduling')
+  function handleConfirmRental(car: CarDTO) {
+    navigation.navigate('Scheduling', {car})
   }
 
   return (
@@ -78,7 +75,7 @@ export function CarDetails({route}: CarDetailProps) {
       <Footer>
         <Button
           title="Escolher período do aluguel"
-          onPress={handleConfirmRental}
+          onPress={() => handleConfirmRental(car)}
         />
       </Footer>
     </Container>

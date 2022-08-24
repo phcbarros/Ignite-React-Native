@@ -1,7 +1,9 @@
+import {useState} from 'react'
+import {StackScreenProps} from '@react-navigation/stack'
 import {useTheme} from 'styled-components'
 import {StatusBar} from 'react-native'
-
 import {useNavigation} from '@react-navigation/native'
+
 import {BackButton} from '../../components/BackButton'
 import {Button} from '../../components/Button'
 
@@ -19,14 +21,45 @@ import {
 } from './styles'
 
 import ArrowSVG from '../../assets/arrow.svg'
-import {Calendar} from '../../components/Calendar'
+import {
+  Calendar,
+  DayProps,
+  MarkedDateProps,
+  generateInterval,
+} from '../../components/Calendar'
+import {AppRoutes} from '../../routes/stack.routes'
 
-export function Scheduling() {
+type SchedulingProps = StackScreenProps<AppRoutes, 'Scheduling'>
+
+export function Scheduling({route}: SchedulingProps) {
+  const [lastSelectedDate, setLastSelectedDate] = useState<DayProps>(
+    {} as DayProps,
+  )
+  const [markedDates, setMarkedDates] = useState<MarkedDateProps>(
+    {} as MarkedDateProps,
+  )
+
   const theme = useTheme()
   const navigation = useNavigation()
 
   function handleSchedulingDetails() {
     navigation.navigate('SchedulingDetails')
+  }
+
+  function handleChangeDate(date: DayProps) {
+    let start = !lastSelectedDate.timestamp ? date : lastSelectedDate
+    let end = date
+
+    if (start.timestamp > end.timestamp) {
+      const aux = start
+      start = end
+      end = aux
+    }
+
+    setLastSelectedDate(end)
+
+    const interval = generateInterval({start, end})
+    setMarkedDates(interval)
   }
 
   return (
@@ -37,7 +70,10 @@ export function Scheduling() {
         backgroundColor="transparent"
       />
       <Header>
-        <BackButton onPress={() => {}} color={theme.colors.shape} />
+        <BackButton
+          onPress={() => navigation.goBack()}
+          color={theme.colors.shape}
+        />
 
         <Title>
           Escolha uma{'\n'}
@@ -65,7 +101,7 @@ export function Scheduling() {
       </Header>
 
       <Content>
-        <Calendar />
+        <Calendar markedDates={markedDates} onDayPress={handleChangeDate} />
       </Content>
 
       <Footer>
