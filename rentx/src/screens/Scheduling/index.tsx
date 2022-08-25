@@ -1,8 +1,9 @@
 import {useState} from 'react'
 import {StackScreenProps} from '@react-navigation/stack'
 import {useTheme} from 'styled-components'
-import {StatusBar} from 'react-native'
+import {StatusBar, Alert} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import {format} from 'date-fns'
 
 import {BackButton} from '../../components/BackButton'
 import {Button} from '../../components/Button'
@@ -28,22 +29,39 @@ import {
   generateInterval,
 } from '../../components/Calendar'
 import {AppRoutes} from '../../routes/stack.routes'
+import {getPlatformDate} from '../../utils/getPlatformDate'
 
 type SchedulingProps = StackScreenProps<AppRoutes, 'Scheduling'>
 
+interface RentalPeriod {
+  startFormatted: string
+  endFormatted: string
+}
+
 export function Scheduling({route}: SchedulingProps) {
+  const {car} = route.params
   const [lastSelectedDate, setLastSelectedDate] = useState<DayProps>(
     {} as DayProps,
   )
   const [markedDates, setMarkedDates] = useState<MarkedDateProps>(
     {} as MarkedDateProps,
   )
+  const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>(
+    {} as RentalPeriod,
+  )
 
   const theme = useTheme()
   const navigation = useNavigation()
 
   function handleSchedulingDetails() {
-    navigation.navigate('SchedulingDetails')
+    if (!rentalPeriod.startFormatted || !rentalPeriod.endFormatted) {
+      Alert.alert('Selecione o período do aluguel')
+      return
+    }
+    navigation.navigate('SchedulingDetails', {
+      car,
+      dates: Object.keys(markedDates),
+    })
   }
 
   function handleChangeDate(date: DayProps) {
@@ -60,6 +78,17 @@ export function Scheduling({route}: SchedulingProps) {
 
     const interval = generateInterval({start, end})
     setMarkedDates(interval)
+
+    const firstDate = Object.keys(interval)[0]
+    const lastDate = Object.keys(interval)[Object.keys(interval).length - 1]
+
+    setRentalPeriod({
+      startFormatted: format(
+        getPlatformDate(new Date(firstDate)),
+        'dd/MM/yyyy',
+      ),
+      endFormatted: format(getPlatformDate(new Date(lastDate)), 'dd/MM/yyyy'),
+    })
   }
 
   return (
@@ -84,8 +113,8 @@ export function Scheduling({route}: SchedulingProps) {
         <RentalPeriod>
           <DateInfo>
             <DateTitle>DE</DateTitle>
-            <DateValueContainer selected={false}>
-              <DateValue></DateValue>
+            <DateValueContainer selected={Boolean(rentalPeriod.startFormatted)}>
+              <DateValue>{rentalPeriod.startFormatted}</DateValue>
             </DateValueContainer>
           </DateInfo>
 
@@ -93,8 +122,8 @@ export function Scheduling({route}: SchedulingProps) {
 
           <DateInfo>
             <DateTitle>ATÉ</DateTitle>
-            <DateValueContainer selected={false}>
-              <DateValue></DateValue>
+            <DateValueContainer selected={Boolean(rentalPeriod.endFormatted)}>
+              <DateValue>{rentalPeriod.endFormatted}</DateValue>
             </DateValueContainer>
           </DateInfo>
         </RentalPeriod>
