@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import {StackScreenProps} from '@react-navigation/stack'
-import {useTheme} from 'styled-components'
 import {StatusBar, Alert} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import {useTheme} from 'styled-components'
 import {format} from 'date-fns'
 
 import {BackButton} from '../../components/BackButton'
