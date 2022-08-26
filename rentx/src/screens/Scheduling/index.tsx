@@ -7,6 +7,12 @@ import {format} from 'date-fns'
 
 import {BackButton} from '../../components/BackButton'
 import {Button} from '../../components/Button'
+import {
+  Calendar,
+  DayProps,
+  MarkedDateProps,
+  generateInterval,
+} from '../../components/Calendar'
 
 import {
   Container,
@@ -22,12 +28,6 @@ import {
 } from './styles'
 
 import ArrowSVG from '../../assets/arrow.svg'
-import {
-  Calendar,
-  DayProps,
-  MarkedDateProps,
-  generateInterval,
-} from '../../components/Calendar'
 import {AppRoutes} from '../../routes/stack.routes'
 import {getPlatformDate} from '../../utils/getPlatformDate'
 
