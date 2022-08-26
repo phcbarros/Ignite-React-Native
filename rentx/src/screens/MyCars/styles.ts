@@ -1,16 +1,12 @@
-import styled, {css} from 'styled-components/native'
+import styled from 'styled-components/native'
 import {RFValue} from 'react-native-responsive-fontsize'
 import {getStatusBarHeight} from 'react-native-iphone-x-helper'
-
-interface DateValueProps {
-  selected?: boolean
-}
 
 export const Container = styled.View`
   flex: 1;
   align-items: center;
 
-  background-color: ${({theme}) => theme.colors.primary};
+  background-color: ${({theme}) => theme.colors.background_primary};
 `
 
 export const Header = styled.View`
@@ -21,7 +17,7 @@ export const Header = styled.View`
 
   justify-content: center;
   padding: 24px;
-  padding-top: ${getStatusBarHeight() + 32}px;
+  padding-top: ${getStatusBarHeight()}px;
 `
 
 export const Title = styled.Text`
@@ -69,4 +65,42 @@ export const AppointmentsQuantity = styled.Text`
   font-family: ${({theme}) => theme.fonts.secondary_500};
   font-size: ${RFValue(15)}px;
   line-height: 16px;
+`
+
+export const CarWrapper = styled.View`
+  margin-bottom: 16px;
+`
+
+export const CarFooter = styled.View`
+  width: 100%;
+  padding: 12px;
+
+  margin-top: -10px;
+
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: ${({theme}) => theme.colors.background_secondary};
+`
+
+export const CarFooterTitle = styled.Text`
+  color: ${({theme}) => theme.colors.text_detail};
+  font-family: ${({theme}) => theme.fonts.secondary_500};
+  font-size: ${RFValue(10)}px;
+  line-height: 11px;
+
+  text-transform: uppercase;
+`
+
+export const CarFooterPeriod = styled.View`
+  flex-direction: row;
+  align-items: center;
+`
+
+export const CarFooterDate = styled.Text`
+  color: ${({theme}) => theme.colors.title};
+  font-family: ${({theme}) => theme.fonts.primary_400};
+  font-size: ${RFValue(13)}px;
+  line-height: 34px;
 `
