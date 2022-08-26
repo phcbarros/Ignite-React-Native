@@ -182,6 +182,7 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
           onPress={handleSchedulingComplete}
           color={theme.colors.success}
           enabled={!loading}
+          loading={loading}
         />
       </Footer>
     </Container>
