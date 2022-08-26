@@ -16,7 +16,7 @@ export type AppRoutes = {
   Scheduling: {car: CarDTO}
   SchedulingDetails: {car: CarDTO; dates: string[]}
   SchedulingComplete: undefined
-  MayCars: undefined
+  MyCars: undefined
 }
 
 declare global {

@@ -68,10 +68,24 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
         ...dates,
       ]
 
-      await api.put(`/schedules_bycars/${car.id}`)
+      await api.post('/schedules_byuser', {
+        user_id: 1,
+        car,
+        startDate: format(getPlatformDate(new Date(dates[0])), 'yyyy-MM-dd'),
+        endDate: format(
+          getPlatformDate(new Date(dates[dates.length - 1])),
+          'yyyy-MM-dd',
+        ),
+      })
+
+      await api.put(`/schedules_bycars/${car.id}`, {
+        id: car.id,
+        unavailable_dates: unavailableDates,
+      })
 
       navigation.navigate('SchedulingComplete')
     } catch (error) {
+      console.error(error)
       Alert.alert('Não foi possível efetuar o agendamento')
     }
   }
