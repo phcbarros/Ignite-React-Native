@@ -54,10 +54,6 @@ export function Scheduling({route}: SchedulingProps) {
   const navigation = useNavigation()
 
   function handleSchedulingDetails() {
-    if (!rentalPeriod.startFormatted || !rentalPeriod.endFormatted) {
-      Alert.alert('Selecione o período do aluguel')
-      return
-    }
     navigation.navigate('SchedulingDetails', {
       car,
       dates: Object.keys(markedDates),
@@ -134,7 +130,11 @@ export function Scheduling({route}: SchedulingProps) {
       </Content>
 
       <Footer>
-        <Button title="Confirmar" onPress={handleSchedulingDetails} />
+        <Button
+          title="Confirmar"
+          onPress={handleSchedulingDetails}
+          enabled={Boolean(rentalPeriod.startFormatted)}
+        />
       </Footer>
     </Container>
   )

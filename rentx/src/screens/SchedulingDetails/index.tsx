@@ -55,6 +55,7 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
   const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>(
     {} as RentalPeriod,
   )
+  const [loading, setLoading] = useState(false)
 
   const {car, dates} = route.params
   const theme = useTheme()
@@ -62,6 +63,7 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
 
   async function handleSchedulingComplete() {
     try {
+      setLoading(true)
       const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`)
       const unavailableDates = [
         ...schedulesByCar.data.unavailable_dates,
@@ -87,6 +89,8 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
     } catch (error) {
       console.error(error)
       Alert.alert('Não foi possível efetuar o agendamento')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -177,6 +181,7 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
           title="Alugar agora"
           onPress={handleSchedulingComplete}
           color={theme.colors.success}
+          enabled={!loading}
         />
       </Footer>
     </Container>

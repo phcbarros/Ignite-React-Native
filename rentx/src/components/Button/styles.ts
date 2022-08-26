@@ -5,6 +5,7 @@ import {PropsWithChildren} from 'React'
 
 interface ButtonProps extends PropsWithChildren<RectButtonProps> {
   color?: string
+  enabled?: boolean
 }
 
 export const Container = styled(RectButton)<ButtonProps>`
@@ -15,6 +16,7 @@ export const Container = styled(RectButton)<ButtonProps>`
   justify-content: center;
 
   background-color: ${({color}) => color};
+  opacity: ${({enabled}) => (enabled ? 1 : 0.5)};
 `
 
 export const Title = styled.Text`
