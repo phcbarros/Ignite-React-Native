@@ -1,14 +1,21 @@
 import {StatusBar} from 'react-native'
-import {Button, StyleSheet} from 'react-native'
+import {Button, StyleSheet, Dimensions} from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  withTiming,
+  Easing,
 } from 'react-native-reanimated'
 
 import {Container} from './styles'
 
-//useSharedValue compartilha valores entre as animações
-//useAnimatedStyle usado para mudar os estilos durante as animações
+const WIDTH = Dimensions.get('window').width
+
+// useSharedValue compartilha valores entre as animações
+// useAnimatedStyle usado para mudar os estilos durante as animações
+// withTiming transição da animação durante o tempo
+
+//https://cubic-bezier.com/#.17,.67,.83,.67
 
 export function Splash() {
   const animation = useSharedValue(0)
@@ -17,14 +24,17 @@ export function Splash() {
     return {
       transform: [
         {
-          translateX: animation.value,
+          translateX: withTiming(animation.value, {
+            duration: 500,
+            easing: Easing.bezier(0, 1.03, 0, 1.03),
+          }),
         },
       ],
     }
   })
 
   function handleAnimationPosition() {
-    animation.value = Math.random() * 100
+    animation.value = Math.random() * (WIDTH - 100)
   }
 
   return (
