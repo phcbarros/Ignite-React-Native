@@ -1,4 +1,12 @@
+import {StatusBar} from 'react-native'
 import {StackScreenProps} from '@react-navigation/stack'
+import Animated, {
+  useSharedValue,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  interpolate,
+  Extrapolate,
+} from 'react-native-reanimated'
 
 import {BackButton} from '../../components/BackButton'
 import {ImageSlider} from '../../components/ImageSlider'
@@ -14,7 +22,6 @@ import {
   Container,
   Header,
   CardImage,
-  Content,
   Details,
   Description,
   Brand,
@@ -32,21 +39,46 @@ type CarDetailProps = StackScreenProps<AppRoutes, 'CarDetails'>
 export function CarDetails({route, navigation}: CarDetailProps) {
   const {car} = route.params
 
+  const scrollY = useSharedValue(0)
+  const handleScroll = useAnimatedScrollHandler((event) => {
+    console.log(event.contentOffset.y)
+    scrollY.value = event.contentOffset.y
+  })
+
+  const headerAnimationStyle = useAnimatedStyle(() => {
+    return {
+      height: interpolate(scrollY.value, [0, 200], [200, 0], Extrapolate.CLAMP),
+    }
+  })
+
   function handleConfirmRental(car: CarDTO) {
     navigation.navigate('Scheduling', {car})
   }
 
   return (
     <Container>
-      <Header>
-        <BackButton onPress={() => navigation.goBack()} />
-      </Header>
+      <StatusBar
+        barStyle="dark-content"
+        translucent
+        backgroundColor="transparent"
+      />
+      <Animated.View style={[headerAnimationStyle]}>
+        <Header>
+          <BackButton onPress={() => navigation.goBack()} />
+        </Header>
 
-      <CardImage>
-        <ImageSlider imagesUrl={car.photos} />
-      </CardImage>
+        <CardImage>
+          <ImageSlider imagesUrl={car.photos} />
+        </CardImage>
+      </Animated.View>
 
-      <Content>
+      <Animated.ScrollView
+        contentContainerStyle={{
+          padding: 24,
+          alignItems: 'center',
+        }}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}>
         <Details>
           <Description>
             <Brand>{car.brand}</Brand>
@@ -70,7 +102,11 @@ export function CarDetails({route, navigation}: CarDetailProps) {
         </Accessories>
 
         <About>{car.about}</About>
-      </Content>
+        <About>{car.about}</About>
+        <About>{car.about}</About>
+        <About>{car.about}</About>
+        <About>{car.about}</About>
+      </Animated.ScrollView>
 
       <Footer>
         <Button

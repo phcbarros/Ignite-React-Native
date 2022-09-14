@@ -4,7 +4,7 @@ import {Feather} from '@expo/vector-icons'
 import {useTheme} from 'styled-components'
 import {useNavigation} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
-import {Alert} from 'react-native'
+import {Alert, StatusBar} from 'react-native'
 import {format} from 'date-fns'
 
 import {BackButton} from '../../components/BackButton'
@@ -108,6 +108,11 @@ export function SchedulingDetails({route}: SchedulingDetailsProps) {
 
   return (
     <Container>
+      <StatusBar
+        barStyle="dark-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <Header>
         <BackButton onPress={() => navigation.goBack()} />
       </Header>
